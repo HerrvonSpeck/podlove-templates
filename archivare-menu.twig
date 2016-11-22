@@ -1,0 +1,40 @@
+    {% set episode_count_all = 0 %}
+    {% for episode in podcast.episodes %}
+    {% set episode_count_all = episode_count_all + 1 %}
+    {% endfor %}
+    
+    {% set episode_count_geschichten = 0 %}
+    {% for episode in podcast.episodes({category: 'geschichtenkapsel'}) %}
+    {% set episode_count_geschichten = episode_count_geschichten + 1 %}
+    {% endfor %}
+    
+    {% set episode_count_gedichte = 0 %}
+    {% for episode in podcast.episodes({category: 'gedichtkapsel'}) %}
+    {% set episode_count_gedichte = episode_count_gedichte + 1 %}
+    {% endfor %}
+    
+    {% set episode_count_meta = 0 %}
+    {% for episode in podcast.episodes({category: 'metakapsel'}) %}
+    {% set episode_count_meta = episode_count_meta + 1 %}
+    {% endfor %}
+
+<div>Dank dendrochronologischer Analysen ist es uns möglich, dir hier genau zu zeigen, wann wir eine <em>Geschichtenkapsel</em> gesät haben. Ein Klick auf die Bilder Beteiligter zeigt dir mehr Informationen über sie.</div>
+</br>
+<div class="archivare-menu-nav">
+    <a href="http://geschichtenkapsel.de/archiv" class="page-id-42">Alle Kapseln</a> ({{ episode_count_all }}) · <a href="http://geschichtenkapsel.de/archiv/geschichten" class="page-id-346">Geschichten</a> ({{ episode_count_geschichten }}) · <a href="http://geschichtenkapsel.de/archiv/lyrik" class="page-id-351">Gedichte</a> ({{ episode_count_gedichte }}) · <a href="http://geschichtenkapsel.de/archiv/meta" class="page-id-353">Sonstige</a> ({{ episode_count_meta }}) · <a href="http://geschichtenkapsel.de/archiv/personen" class="page-id-420">Personen</a>
+</div>
+</br>
+
+<style>
+body.page-id-42 a.page-id-42, body.page-id-346 a.page-id-346, body.page-id-351 a.page-id-351, body.page-id-353 a.page-id-353, body.page-id-420 a.page-id-420 {
+font-weight: bold;
+}
+
+div.archivare-menu-nav {
+    padding-top: 20px;
+    float: left;
+    font-size: 0.8em;
+}
+</style>
+
+{% include 'archivare-css' %}
