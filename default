@@ -1,0 +1,8 @@
+{% if not is_feed() %}
+
+	{# display web player for episode #}
+	{{ episode.player }}
+
+<div align="right">{{ podcast.subscribeButton({size: 'small', format: 'rectangle'}) }}</div>
+
+{% endif %}
