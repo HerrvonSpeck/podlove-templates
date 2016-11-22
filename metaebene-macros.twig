@@ -5,6 +5,8 @@
 {% macro translate(term, language) %}
 	{% set localization_table =
 	    {
+	        "second":   { en: "second",     de: "Sekunde"    },
+	        "seconds":  { en: "seconds",    de: "Sekunden"   },
 	        "minute":   { en: "minute",     de: "Minute"    },
 	        "minutes":  { en: "minutes",    de: "Minuten"   },
 	        "hour":     { en: "hour",       de: "Stunde"    },
@@ -12,7 +14,7 @@
 	    }
 	%}
 	{% if not language %}
-		{% set language = 'en' %}
+		{% set language = 'de' %}
 	{% endif %}
 	{{ localization_table [term][language] }}
 {% endmacro %}
@@ -20,7 +22,7 @@
 {% macro print_date(date, language) %}
 	{% import _self as meta %}
 
-    {% set images_urlpath = 'http://meta.metaebene.me/media/metaebene/images/' %}
+    {% set images_urlpath = 'http://geschichtenkapsel.de/images/' %}
 	{% set calendar_icon_url = images_urlpath ~ "icon-calendar" %}
 
 	<img class="tiny_icon"
@@ -33,7 +35,7 @@
 {% macro print_duration(duration, language) %}
 	{% import _self as meta %}
 
-    {% set images_urlpath = 'http://meta.metaebene.me/media/metaebene/images/' %}
+    {% set images_urlpath = 'http://geschichtenkapsel.de/images/' %}
 	{% set time_icon_url = images_urlpath ~ "icon-time" %}
 
 	<img class="tiny_icon"
@@ -46,10 +48,16 @@
 		{{ duration.hours }} {{ meta.translate("hours", language) }}
 	{% endif %}
 
-	{% if duration.minutes == 1 %}
+	{% if duration.hours == 0 and duration.minutes == 1 %}
 		{{ duration.minutes }} {{ meta.translate("minute", language) }}
-	{% elseif duration.minutes != 0 %}
+	{% elseif duration.hours == 0 and duration.minutes != 0 %}
 		{{ duration.minutes }} {{ meta.translate("minutes", language) }}
+	{% endif %}
+	
+	{% if duration.hours == 0 and duration.minutes == 0 and duration.seconds == 1 %}
+		{{ duration.seconds }} {{ meta.translate("second", language) }}
+	{% elseif duration.hours == 0 and duration.minutes == 0 and duration.seconds != 0 %}
+		{{ duration.seconds }} {{ meta.translate("seconds", language) }}
 	{% endif %}
 
 {% endmacro %}
