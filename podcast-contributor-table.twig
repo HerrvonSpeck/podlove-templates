@@ -1,0 +1,126 @@
+{% if option.ttitle %}
+    <div class="podcast-contributer-table-title">{{ option.ttitle }}</div>
+{% endif %}
+<table class="podlove-contributors-table">
+	<tbody>
+		{% for contributor in podcast.contributors({group: option.group, role: option.role, scope: option.scopes}) %}
+			{% if contributor.visible %}
+			    {% set episode_count = 0 %}
+                {% for episode in contributor.episodes %}
+                {% set episode_count = episode_count + 1 %}
+                {% endfor %}
+                
+                {% if episode_count == 1 %}
+                {% set counter_sing = "Kapsel" %}
+                {% else %}
+                {% set counter_sing = "Kapseln" %}
+                {% endif %}
+			    
+				<tr>
+	{% if option.avatars == "yes" %}
+		<td class="avatar_cell">
+            <a class="episode_contributor_avatars" href="personal/{{ contributor.id }}" alt="Avatar">{{ contributor.image.html({width: size|default(70), height: size|default(70), class: "avatar avatar-" ~ size|default(70) ~  " photo", alt: "avatar", title: "Profil" }) }}</a>
+		</td>
+	{% endif %}
+	<td class="title_cell">
+		<a class="episode_contributor_avatars" href="personal/{{ contributor.id }}">{{ contributor.name }}</a>
+		
+		{% if option.social == "yes" and option.roles != "yes" %}
+	   	    <div class="social_div">
+		    {% for service in contributor.services({category: "social"}) %}
+			<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+				{{
+					service.image.html({
+						width: 20, 
+						class: "podlove-contributor-button",
+						alt: service.title ~ " Icon"
+					}) 
+				}}
+			</a>
+	    	{% endfor %}
+	    	</div>
+		{% endif %}
+		
+		{% if option.roles == "yes" %}<div class="contributor_role">{{ contributor.role }}</div>{% endif %}
+
+        {% if option.profilelink == "yes" %}
+            <td>
+			<div class="contributor_profile_link"><a class="contributor_profile_link" href="personal/{{ contributor.id }}">mehr über {{ contributor.name }}…</a></div>
+			</td>
+		{% endif %}
+		
+		{% if option.episodecount == "yes" %}
+            <td>
+			<div class="contributor_profile_link"><a class="contributor_profile_link" href="personal/{{ contributor.id }}">{{ episode_count }} {{ counter_sing }} anzeigen…</a></div>
+			</td>
+		{% endif %}
+			    
+		{% if contributor.comment %}
+			<br><em>{{ contributor.comment }}</em>
+		{% endif %}
+	</td>
+	{% if option.groups == "yes" %}
+		<td class="group_cell">
+			{{ contributor.group }}
+		</td>
+	{% endif %}
+	<td class="social_cell">
+	   	{% if option.social == "yes" and option.roles == "yes" %}
+	   	<div class="social_div">
+		<div class="social_inner_div">
+		    {% for service in contributor.services({category: "social"}) %}
+			<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+				{{
+					service.image.html({
+						width: 20, 
+						class: "podlove-contributor-button",
+						alt: service.title ~ " Icon"
+					}) 
+				}}
+			</a>
+		{% endfor %}
+		</div>
+		{% endif %}
+	{% if option.donations == "yes" %}
+        <div class="social_inner_div">
+		{% for service in contributor.services({category: "donation"}) %}
+			<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+				{{
+					service.image.html({
+						width: 20, 
+						class: "podlove-contributor-button",
+						alt: service.title ~ " Icon"
+					}) 
+				}}
+			</a>
+		{% endfor %}
+		</div>
+	{% endif %}
+	</div>
+	</td>
+	{% if option.flattr == "yes" %}
+		<td class="flattr_cell">
+			{% if contributor.flattr %}
+				{% set cTitle = contributor.name ~ (episode ? " @ " ~ episode.title : "" ) %}
+				<a target="_blank"
+					class="FlattrButton"
+					style="display:none;"
+					title="Flattr {{ cTitle }}"
+					rel="flattr;uid:{{ contributor.flattr }};button:compact;popout:0"
+					href="{{ contributor.flattr_url }}">
+						{{ cTitle }}
+				</a>
+			{% endif %}
+		</td>
+	{% endif %}
+</tr>
+			{% endif %}
+		{% endfor %}
+	</tbody>
+</table>
+
+{% if option.flattr == "yes" %}
+	{% include '@contributors/_contributor-table-flattr.twig' %}
+{% endif %}
+
+{% include 'contributors-table-list-css' %}
