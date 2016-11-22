@@ -7,59 +7,165 @@
 {# option.flattr     --- Display Contributor Flattr Button #}
 {# option.show_name  --- Show Contributor Name #}
 
+{% import "metaebene-macros" as metaebene %}
+
+{% if option.icon_size %}
+    {% set icon_size = icon.icon_size %}
+{% else %}
+    {% set icon_size = '110' %}
+{% endif %}
 
 {% if option.avatar_size %}
     {% set avatar_size = option.avatar_size %}
 {% else %}
-    {% set avatar_size = '128' %}
+    {% set avatar_size = '48' %}
 {% endif %}
 
-<div class="contributor-profile">
+{% if option.avatar_l_size %}
+    {% set avatar_l_size = option.avatar_l_size %}
+{% else %}
+    {% set avatar_l_size = '100' %}
+{% endif %}
+
+{% if option.publicdescription %}
+    {% set publicdescription = option.publicdescription %}
+{% else %}
+    {% set publicdescription = 'Hat sich stets bemüht.' %}
+{% endif %}
+
 	{% set contributor = podcast.contributors({scope: "podcast", id: option.userid}) %}
     {% if contributor %}
-        {{ contributor.image.html({ width: avatar_size, title: contributor.name, alt: contributor.name }) }}
-	    {%if option.show_name == "yes" %}
-		<br/>
-		<strong>{{ contributor.name }}</strong>
-		{% endif %}
 
-        {% if option.social == "yes" %}
-			{% for service in contributor.services({category: "social"}) %}
-	        {% if loop.first %}<br/>{% endif %}
-				<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
-                {{ service.image.html({ width: 32, class: "podlove-contributor-button", alt: service.title }) }}
-				</a>
-			{% endfor %}
-		{% endif %}
-
-        {% if option.donations == "yes" %}
-			{% for service in contributor.services({category: "donation"}) %}
-	        {% if loop.first %}<br/>{% endif %}
-				<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
-                {{ service.image.html({ width: 32, class: "podlove-contributor-button", alt: service.title }) }}
-				</a>
-			{% endfor %}
-		{% endif %}
-
-
-		{% if option.flattr == "yes" and contributor.flattr %}
-			<br/><a target="_blank"
-				class="FlattrButton"
-				title="Flattr {{ contributor.name }}"
-				rel="flattr;uid:{{ contributor.flattr }};button:compact;popout:0"
-				href="{{ contributor.flattr_url }}">
-					Flattr {{ contributor.name }}
-			</a>
+		{% if option.episodes == "yes" %}
+		
+			{% set episode_count = 0 %}
+            {% for episode in contributor.episodes %}
+            {% set episode_count = episode_count + 1 %}
+            {% endfor %}
+                
+            {% if episode_count == 1 %}
+            {% set counter_sing = "dieser Kapsel" %}
+            {% else %}
+            {% set counter_sing = "diesen Kapseln" %}
+            {% endif %}
+		
+        <table class="episode_table">
+            <colgroup>
+                <col id="episode_icon" width="{{ icon_size + 16 }}" />
+                <col id="episode_description" />
+            </colgroup>
+        <tbody>
+            <tr class="contributor_row">
+                <td class="contributor_icon">
+                    <div class="contributor-image">
+            <img class="contributor-image" src="{{ contributor.image.url }}" title="{{ contributor.name }}" height="{{ avatar_l_size }}" width="{{ avatar_l_size }}"/>
+                    </div>
+                </td>
+                <td class="contributor_description">
+                    {% if option.publicdescription %}
+                    <div class="contributor_description">{{ publicdescription }}</div>
+                    {% endif %}
+                    <div class="social-icons">
+                    {% if option.social == "yes" %}
+	                {% for service in contributor.services({category: "social"}) %}
+			        	<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                           {{ service.image.html({ width: 32, class: "podlove-contributor-button", alt: service.title }) }}
+			        	</a>
+		            {% endfor %}
+	            	{% endif %}
+	            	{% if option.donations == "yes" %}
+		    	    {% for service in contributor.services({category: "donation"}) %}
+				        <a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+                            {{ service.image.html({ width: 32, class: "podlove-contributor-button", alt: service.title }) }}
+				        </a>
+			        {% endfor %}
+		            {% endif %}
+		        </div>
+                </td>
+            </tr>
+            <tr class="contributor_sub">
+                <td colspan="2">
+                    <div class="contributor_sub">
+                        {{ contributor.name }} hat an {{ counter_sing}} mitgewirkt:
+                    </div>
+                </td>
+            </tr>
+            {% for episode in contributor.episodes %}
+                {% include 'archivare-table' %}
+            {% endfor %}
+        </tbody>
+        </table>
+        
 		{% endif %}
 
 	{% endif %}
-</div>
 
 
 <style>
-	div.contributor-profile {
-		float:right;
-	    margin-left: 20px;
-	    margin-left: 20px;
-   }
+img.contributor-image {
+        border-radius: 50%;
+}
+
+.episode_table .social-icons li {
+	margin: 0;
+}
+.episode_table .social-icons img {
+	display: inline;
+}
+.episode_table .social-icons a {
+    text-decoration: none;
+    border: 0;
+}
+.episode_table .social-icons {
+    margin-right: 5px;
+}
+.episode_table .social-icons div {
+    width: 100%;
+    border-bottom: 2px solid #ddd;
+    float: left;
+}
+
+.public-description {
+    margin-top: auto;
+    margin-bottom: auto;
+    vertical-align: middle;
+}
+
+.contributor_description div {
+    font-weight: normal !important;
+}
+
+.contributor_row {
+    vertical-align: middle;
+    background: #ddd;
+}
+
+.contributor_row .contributor_icon {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.contributor_row td {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #ddd;
+	border-top: 0px;
+	border-left: 0px;
+	border-right: 0px;
+}
+.contributor_sub tr {
+    height: 2em;
+}
+.contributor_sub td {
+    border-right: 0px;
+    border-left: 0px;
+    border-bottom: 2px solid #ddd;
+}
+.contributor_sub div {
+    font-weight: bold;
+}
+
+
 </style>
+
+{% include 'archivare-css' %}
