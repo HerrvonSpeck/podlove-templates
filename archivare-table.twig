@@ -1,0 +1,45 @@
+        <tr id="{{ episode.slug }}" class="archive_episode_row">
+            <td class="episode_icon">
+                <a href="{{ episode.url }}">
+                    <img class="episode_icon" border="0" src="{{ episode.imageUrlWithFallback }}" width="{{ icon_size }}" height="{{ icon_size }}">
+                </a>
+            </td>
+            <td class="episode_description">
+                <div class="episode_title"><a class="episode_title" href="{{ episode.url }}">{{ episode.title }}</a></div>
+                
+                <div class="episode_meta">
+                    <div class="episode_subtitle">{{ episode.subtitle }}</div>
+                    <div class="episode_data">
+                    {{ metaebene.print_date(episode.publicationDate, language) }}<br/>
+                    {{ metaebene.print_duration(episode.duration, language) }}</div>
+                    
+                {# contributor avatars #}
+                <div class="episode_contributor_avatars">
+                {% set contributor_count = 0 %}
+                
+                {% for contributor in episode.contributors({group: option.group, role: option.role}) %}
+                {% set contributor_count = contributor_count + 1 %}
+                {% endfor %}
+                
+                {% if contributor_count > 5 %}
+                {% set episode_contributor_count = 3 %}
+                {% else %}
+                {% set episode_contributor_count = 4 %}
+                {% endif %}
+                
+                {% set contributor_count = 0 %}
+                {% for contributor in episode.contributors({group: option.group, role: option.role}) %}
+                {% set contributor_count = contributor_count + 1 %}
+                {% if episode_contributor_count >= 0 and contributor_count > 0 %}
+                    {% set episode_contributor_count = episode_contributor_count - 1 %}
+                        <a class="episode_contributor_avatars" href="/personal/{{ contributor.id }}"><img class="episode_contributor_avatars" src="{{ contributor.avatar.url }}" title="{{ contributor.name }}" height="{{ avatar_size }}" width="{{ avatar_size }}"/></a>
+                {% endif %}
+                {% endfor %}
+                {% if contributor_count > 5 %}
+                    <a class="episode_contributor_avatars" href="{{ episode.url }}#mitwirkende"><img class="episode_contributor_avatars" src="http://geschichtenkapsel.de/images/avatardots2.png" title="weitere…" height="{{ avatar_size }}" width="{{ avatar_size }}"></a>
+                {% endif %}
+                </div>
+
+                </div>
+            </td>
+        </tr>
