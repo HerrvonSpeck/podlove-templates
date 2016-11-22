@@ -35,58 +35,28 @@
     {% if episode_count == 1 %}
 		{# Featured Episode #}
 
+        <div class="before_title">
+            <strong>Zuletzt in der Geschichtenkapsel…</strong>
+        </div>
+
         <div class="featured-episode">
-            <h1 class="entry-title"><a title="{{ episode.title }}" href="{{ episode.url }}">{{ episode.title }}</a></h1>
-            <p class="episode_subtitle"><strong><em>{{ episode.subtitle }}</em></strong></p>
 
-            <p class="episode_meta">
-                    {{ metaebene.print_date(episode.publicationDate, option.language) }} 
-                    {{ metaebene.print_duration(episode.duration, option.language) }}
-			</p>
+            {{ episode.player({context: 'landing-page'}) }}
 
-            {{ episode.player }}
+			</br><em><a title="{{ episode.title }}" href="{{ episode.url }}">Zur Kapsel…</a></em>
 
-			{% if episode.contributors({group: option.group, role: option.role}) %}
-			<div class="episode-contributors">
-				<table>
-					<colgroup>
-					{% for contributor in episode.contributors({group: option.group, role: option.role}) %}
-				    	<col width="{{ avatar_size }}px" />
-			        {% endfor %}
-					</colgroup>
-					<tr>
-						{% for contributor in episode.contributors({group: option.group, role: option.role}) %}
-				    	<td style="vertical-align: top; width: {{ avatar_size }}px">
-                            {{ contributor.image.html({retina: true, width: avatar_size, title: contributor.name, alt: contributor.name }) }}
-							<br/>
-							<strong>{{ contributor.name }}</strong>
-			                {%if contributor.comment %}
-			                <br/>
-			                <em>{{ contributor.comment }}</em>
-			                {% endif %}
-			            </td>
-                        {% endfor %}
-					</tr>
-			    </table>
-			</div>
-			{% endif %}
-
-            <p class="episode-summary">{{ episode.summary|nl2br }}</p>
-
-			<p><a title="{{ episode.title }}" href="{{ episode.url }}">Zur Sendungsseite...</a></p>
-
-			<div class="episode-footer">
-            </div>
 		</div>
     {% endif %}
 {% endfor %}
 
 {% if episode_count > 1 %}
-	<h2>Frühere Sendungen</h2>
+
+    <strong>Außerdem…</strong>
+    
     <div class="recent-episodes">
-		<table>
+		<table class="recent-episodes-table">
     		{% set episode_count = 0 %}
-    		{% set recent_episodes = 5 %}
+    		{% set recent_episodes = 4 %}
 
     	    <colgroup>
     	        <col id="episode_icon" width="{{ icon_size + 16 }}" />
@@ -98,23 +68,14 @@
     			    {% set episode_count = episode_count + 1 %}
     			    {% if recent_episodes >= 0 and episode_count > 1 %}
     			        <tr id="{{ episode.slug }}" class="archive_episode_row">
-
-                            <td class="episode_guest_avatar" style="width: {{ avatar_size }}px" > 
-                            {# contributor avatars #}
-                            {% for contributor in episode.contributors({group: 'onair', role: 'guest'}) %}
+    			            <td class="episode_icon">
                                 <a href="{{ episode.url }}">
-                                    {{ contributor.image.html({retina: true, width: avatar_size, title: contributor.name, alt: contributor.name }) }}
+                                      <img class="episode_icon" border="0" src="{{ episode.imageUrlWithFallback }}" width="{{ icon_size }}" height="{{ icon_size }}">
                                 </a>
-                            {% endfor %}
-
+                            </td>
     			            <td class="episode-description">
-    			                <h2 class="recent-episode-title"><a href="{{ episode.url }}">{{ episode.title }}</a></h2>
+    			                <div class="recent-episode-title"><a href="{{ episode.url }}">{{ episode.title }}</a></div>
     			                <div class="recent-episode-subtitle">{{ episode.subtitle }}</div>
-								<div class="recent-episode-contributors">
-					                {% for contributor in episode.contributors({group: group, role: role}) %}
-					                    {% if loop.first %}Mit: {% endif %}{{ contributor.name }}{% if not loop.last %}, {% endif %}
-					                {% endfor %}
-								</div>
 
     			                <div class="episode_meta">
     			                    {{ metaebene.print_date(episode.publicationDate, language) }} {{ metaebene.print_duration(episode.duration, language) }}
@@ -126,31 +87,81 @@
     			{% endfor %}
     	    </tbody>
 		</table>
+		 {% if episode_count > 5 %}
+	<p><em><a title="Archiv" href="/archiv/">Alle Kapseln…</a></em></p>
+	    {% endif %}
     </div>
 {% endif %}
 </div>
 
 <style>
+.recent-episodes-table {
+    border-top: 2px solid #ddd;
+    border-bottom: 0px;
+	border-left: 0px;
+	border-right: 0px;
+}
+.episode_icon {
+    vertical-align: middle;
+}
+.recent-episode-title {
+    overflow: hidden !important;
+    white-space: nowrap !important;
+    text-overflow: ellipsis !important;
+}
+.recent-episode-title a {
+    font-size: 1.0em;
+    text-decoration: none;
+    border: 0;
+    font-weight: bold !important;
+}
+.recent-episode-subtitle {
+    font-size: smaller !important;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.before_title {
+    vertical-align: bottom;
+    border-bottom: 2px solid #ddd !important;
+    border-top: 0px !important;
+    border-left: 0px !important;
+    border-right: 0px !important;
+    margin-bottom: 10px;
+}
+div.episode-overview {
+    width: 100%;
+}
 div.featured-episode {
-	background-color: #eee;
     padding: 12px;
 	margin-bottom: 24px;
+	width: 100%;
 }
-
 div.podlovewebplayer_wrapper {
 	margin-bottom: 24px;
+	width: 100%;
 }
-
 div.episode-contributors {
 	float: right;
 	margin-left: 10px;
 }
-
 div.recent-episode-contributors {
 	font-weight: bold;
 }
-
 div.episode-footer {
 	clear: right;
+}
+.archive_episode_row td {
+    vertical-align: top;
+    padding-top: 24px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid #ddd !important;
+	border-top: 0px;
+	border-left: 0px;
+	border-right: 0px;
+}
+
+img.tiny_icon {
+    margin-top: -0.2em;
 }
 </style>
