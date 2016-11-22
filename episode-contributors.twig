@@ -1,0 +1,41 @@
+<div class="before_title" id="mitwirkende"><strong>Mitwirkende</strong></div>
+<div class="podlove-contributor-container">
+{% for contributor in episode.contributors({group: option.group, role: option.role, scope: 'podcast'}) %}
+{% if contributor.visible %}
+    <div class="podlove-contributor-single-container">
+    <table class="podlove-contributors-table">
+	<tbody>
+	<tr>
+		<td class="avatar_cell">
+			<a class="episode_contributor_avatars" href="http://geschichtenkapsel.de/personal/{{ contributor.id }}">{{ contributor.image.html({width: size|default(80), height: size|default(80), class: "avatar avatar-" ~ size|default(80) ~  " photo", alt: "avatar" }) }}</a>
+		</td>
+		<td class="contributor_cell">
+		<div class="contributor_name"><a href="http://geschichtenkapsel.de/personal/{{ contributor.id }}">{{ contributor.name }}</a></div>
+		<div class="contributor_role">{{ contributor.role }}</div>
+		<div>
+		{% for service in contributor.services({category: "social"}) %}
+			<a target="_blank" title="{{ service.title }}" href="{{ service.profileUrl }}">
+				{{
+					service.image.html({
+						width: 20, 
+						class: "podlove-contributor-button",
+						alt: service.title ~ " Icon"
+					}) 
+				}}
+			</a>
+		{% endfor %}
+		</div>
+		</td>
+    </tr>
+	</tbody>
+</table>
+</div>
+{% endif %}
+{% endfor %}
+</div>
+</br>
+<span class="downloadlist">
+{% include 'download-list' %}
+</span>
+
+{% include 'contributors-table-custom-css' %}
